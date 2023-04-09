@@ -956,7 +956,7 @@ def main():
         relays.add(('%s:%d' % (PacketRelay.SSDP_MCAST_ADDR, PacketRelay.SSDP_MCAST_PORT), 'SSDP'))
     if not args.noSonosDiscovery:
         relays.add((PacketRelay.BROADCAST+':6969', 'Sonos Setup Discovery'))
-        relays.add((PacketRelay.BROADCAST+str(PacketRelay.SSDP_MCAST_PORT), "Sonos Setup Discovery"))
+        relays.add((PacketRelay.BROADCAST+':'+str(PacketRelay.SSDP_MCAST_PORT), "Sonos Setup Discovery"))
 
     if args.ssdpUnicastAddr:
         relays.add(('%s:%d' % (args.ssdpUnicastAddr, PacketRelay.SSDP_UNICAST_PORT), 'SSDP Unicast'))

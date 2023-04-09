@@ -311,7 +311,7 @@ class PacketRelay():
                 rx.bind(('0.0.0.0', port))
 
                 self.receivers.append(rx)
-                listenIP = '255.255.255.255'
+                listenIP = PacketRelay.BROADCAST
 
             elif self.isMulticast(addr):
                 packedAddress = struct.pack('4s4s', socket.inet_aton(addr), socket.inet_aton(ip))
@@ -619,7 +619,6 @@ class PacketRelay():
                 # Record who sent the request
                 # FIXME: record more than one?
                 destMac = None
-                modifiedData = None
 
                 if self.mdnsForceUnicast and dstAddr == PacketRelay.MDNS_MCAST_ADDR and dstPort == PacketRelay.MDNS_MCAST_PORT:
                     data = PacketRelay.mdnsSetUnicastBit(data, ipHeaderLength)
@@ -866,7 +865,7 @@ class PacketRelay():
         return struct.pack('!Q', multicastMac)[2:]
 
     @staticmethod
-    def broadcastIpToMac(addr):
+    def broadcastIpToMac(_):
         broadcastMac = 0xffffffffffff
         return struct.pack('!Q', broadcastMac)[2:]
 
@@ -957,6 +956,7 @@ def main():
         relays.add(('%s:%d' % (PacketRelay.SSDP_MCAST_ADDR, PacketRelay.SSDP_MCAST_PORT), 'SSDP'))
     if not args.noSonosDiscovery:
         relays.add((PacketRelay.BROADCAST+':6969', 'Sonos Setup Discovery'))
+        relays.add((PacketRelay.BROADCAST+PacketRelay.SSDP_MCAST_PORT, "Sonos Setup Discovery"))
 
     if args.ssdpUnicastAddr:
         relays.add(('%s:%d' % (args.ssdpUnicastAddr, PacketRelay.SSDP_UNICAST_PORT), 'SSDP Unicast'))

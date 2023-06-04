@@ -696,10 +696,17 @@ class PacketRelay():
 
                     broadcast = tx['broadcast']
                     relayAddr = tx['relay']['addr']
+                    #if dstPort == 1900:
+                    #    print(tx)
                     if dstPort == 987:
+                        print(tx)
                         if relayAddr == "10.1.4.255":
+                            print("ing")
                             relayAddr = "255.255.255.255"
                             broadcast = "255.255.255.255"
+                            print(tx)
+                            print(dstAddr)
+                            print(origDstAddr)
                             #if tx['relay']['port'] == 987:
                             #    print("bro")
                             #    print(tx)
@@ -735,6 +742,8 @@ class PacketRelay():
                                                                                                           asSrc))
 
                         try:
+                            #if dstPort == 987:
+                            #    print()
                             self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                         except Exception as e:
                             if e.errno == errno.ENXIO:

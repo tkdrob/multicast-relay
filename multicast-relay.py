@@ -695,8 +695,8 @@ class PacketRelay():
                         continue
 
                     broadcast = tx['broadcast']
-                    if dstPort == 1900:
-                        print(tx)
+                    #if dstPort == 1900:
+                    #    print(tx)
                     if dstPort == 987:
                         if tx['relay']['addr'] != "255.255.255.255":
                             print("ing")

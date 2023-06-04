@@ -666,13 +666,12 @@ class PacketRelay():
 
                 # Work out the name of the interface we received the packet on.
                 broadcastPacket = False
-                relayAddr = tx['relay']['addr']
                 if receivingInterface == 'local':
                     for tx in self.transmitters:
                         broadcast = tx['broadcast']
                         if dstPort == 987 and tx['relay']['port'] == 987:
                             broadcast = "255.255.255.255"
-                        if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] \
+                        if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] \
                                 and self.onNetwork(addr, tx['addr'], tx['netmask']):
                             receivingInterface = tx['interface']
                             broadcastPacket = (origDstAddr == broadcast)
@@ -696,6 +695,7 @@ class PacketRelay():
                         continue
 
                     broadcast = tx['broadcast']
+                    relayAddr = tx['relay']['addr']
                     #if dstPort == 1900:
                     #    print(tx)
                     if dstPort == 987:

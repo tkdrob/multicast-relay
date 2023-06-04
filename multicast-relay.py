@@ -669,7 +669,7 @@ class PacketRelay():
                 if receivingInterface == 'local':
                     for tx in self.transmitters:
                         broadcast = tx['broadcast']
-                        if dstPort == 987:
+                        if dstPort == 987 and tx['relay']['addr'] == "255.255.255.255":
                             print("go")
                             print(tx)
                             broadcast = "255.255.255.255"

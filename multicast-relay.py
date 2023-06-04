@@ -709,11 +709,11 @@ class PacketRelay():
                         #broadcast = "255.255.255.255"
                         origDstAddr = "255.255.255.255"
                         modified = True
-                        print(origDstAddr)
-                        print(relayAddr)
-                        print(origDstPort)
-                        print(tx['relay']['port'])
-                        print((self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])))
+                        #print(origDstAddr)
+                        #print(relayAddr)
+                        #print(origDstPort)
+                        #print(tx['relay']['port'])
+                        #print((self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])))
                         #if tx['relay']['port'] == 987:
                         #    print("bro")
                         #    print(tx)
@@ -724,7 +724,7 @@ class PacketRelay():
                     if broadcastPacket:
                         dstAddr = broadcast
                         destMac = self.etherAddrs[PacketRelay.BROADCAST]
-                        origDstAddr = broadcast
+                        origDstAddr = tx['broadcast']
                         data = data[:16] + socket.inet_aton(broadcast) + data[20:]
 
                     if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):
@@ -765,6 +765,12 @@ class PacketRelay():
                                     self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                                 except Exception as e:
                                     self.logger.info('Error sending packet: %s' % str(e))
+                    elif dstPort == 987:
+                        print(origDstAddr)
+                        print(relayAddr)
+                        print(origDstPort)
+                        print(tx['relay']['port'])
+                        print((self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])))
 
     def getInterface(self, interface):
         ifname = None

@@ -699,6 +699,8 @@ class PacketRelay():
                     #if dstPort == 1900:
                     #    print(tx)
                     if dstPort == 987:
+                        if tx['relay']['port'] != 987:
+                            continue
                         print(tx)
                         if relayAddr == "10.1.4.255":
                             print("ing")

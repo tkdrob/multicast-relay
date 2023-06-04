@@ -712,7 +712,7 @@ class PacketRelay():
                             continue
 
                     if broadcastPacket:
-                        dstAddr = tx['broadcast']
+                        dstAddr = broadcast
                         destMac = self.etherAddrs[PacketRelay.BROADCAST]
                         origDstAddr = tx['broadcast']
                         data = data[:16] + socket.inet_aton(broadcast) + data[20:]

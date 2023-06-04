@@ -1067,6 +1067,8 @@ def main():
             return 1
 
         logger.info('Adding %s relay for %s:%s%s' % (relayType, addr, port, relay[1] and ' (%s)' % relay[1] or ''))
+        if port in [987, 9302]:
+            print(port)
         packetRelay.addListener(addr, port, relay[1])
 
     packetRelay.loop()

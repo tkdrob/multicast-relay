@@ -703,6 +703,8 @@ class PacketRelay():
                             print("bro")
                             print(tx)
                             broadcast = "255.255.255.255"
+                        else:
+                            continue
 
                     if broadcastPacket:
                         dstAddr = broadcast

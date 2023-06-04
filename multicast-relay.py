@@ -749,8 +749,8 @@ class PacketRelay():
                                                                                                           asSrc))
 
                         try:
-                            #if dstPort == 987:
-                            #    print()
+                            if dstPort == 987:
+                                print("sent")
                             self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                         except Exception as e:
                             if e.errno == errno.ENXIO:

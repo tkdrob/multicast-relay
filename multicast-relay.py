@@ -716,6 +716,8 @@ class PacketRelay():
                                                                                                           asSrc))
 
                         try:
+                            if tx['relay']['port'] in [987, 9302]:
+                                print("relayed")
                             self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                         except Exception as e:
                             if e.errno == errno.ENXIO:
@@ -730,6 +732,16 @@ class PacketRelay():
                                     self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                                 except Exception as e:
                                     self.logger.info('Error sending packet: %s' % str(e))
+                    elif tx['relay']['port'] in [987, 9302]:
+                        print("not relayed")
+                        print(origDstAddr == tx['relay']['addr'])
+                        print(origDstAddr)
+                        print(tx['relay']['addr'])
+                        print(origDstPort == tx['relay']['port'])
+                        print(origDstPort)
+                        print(tx['relay']['port'])
+                        print((self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])))
+
 
     def getInterface(self, interface):
         ifname = None

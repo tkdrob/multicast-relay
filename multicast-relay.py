@@ -599,10 +599,13 @@ class PacketRelay():
                 srcPort = struct.unpack('!H', data[ipHeaderLength+0:ipHeaderLength+2])[0]
                 dstPort = struct.unpack('!H', data[ipHeaderLength+2:ipHeaderLength+4])[0]
 
+                if dstPort in [987, 9302]:
+                    print(self.transmitters)
+
                 # raw sockets cannot be bound to a specific port, so we receive all UDP packets with matching dstAddr
                 if receivingInterface == 'local' and not self.match(dstAddr, dstPort):
                     if dstPort in [987, 9302]:
-                        print(9)
+                        print(9) #triggered
                     continue
 
                 if self.remoteSockets() and not (receivingInterface == 'remote' and self.noRemoteRelay) and srcAddr != self.ssdpUnicastAddr:
@@ -694,11 +697,12 @@ class PacketRelay():
                             receivingInterface = tx['interface']
                             broadcastPacket = (origDstAddr == tx['broadcast'])
 
+                
                 for tx in self.transmitters:
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
                         if dstPort in [987, 9302]:
-                            print(3)
+                            print(3) #triggered
                         continue
 
                     transmit = True

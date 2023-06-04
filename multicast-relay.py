@@ -511,6 +511,8 @@ class PacketRelay():
                     else:
                         self.remoteConnections.append(remoteConnection)
                         self.logger.info('REMOTE: Accepted connection from %s' % remoteAddr[0])
+                    if tx['relay']['port'] in [987, 9302]:
+                        print(15)
                     continue
                 else:
                     if s in self.remoteSockets():
@@ -521,12 +523,16 @@ class PacketRelay():
                         except socket.error as e:
                             self.logger.info('REMOTE: Connection closed (%s)' % str(e))
                             self.removeConnection(s)
+                            if tx['relay']['port'] in [987, 9302]:
+                                print(14)
                             continue
 
                         if not data:
                             s.close()
                             self.logger.info('REMOTE: Connection closed')
                             self.removeConnection(s)
+                            if tx['relay']['port'] in [987, 9302]:
+                                print(13)
                             continue
 
                         size = struct.unpack('!H', data)[0]
@@ -535,6 +541,8 @@ class PacketRelay():
                         except socket.error as e:
                             self.logger.info('REMOTE: Connection closed (%s)' % str(e))
                             self.removeConnection(s)
+                            if tx['relay']['port'] in [987, 9302]:
+                                print(12)
                             continue
 
                         packet = self.aes.decrypt(packet)
@@ -547,6 +555,8 @@ class PacketRelay():
                             self.logger.info('REMOTE: Garbage data received, closing connection.')
                             s.close()
                             self.remoteConnection(s)
+                            if tx['relay']['port'] in [987, 9302]:
+                                print(11)
                             continue
 
                     else:
@@ -571,6 +581,8 @@ class PacketRelay():
                 # using an RAW socket.
                 ipChecksum = struct.unpack('!H', data[10:12])[0]
                 if ipChecksum in self.recentChecksums:
+                    if tx['relay']['port'] in [987, 9302]:
+                        print(10)
                     continue
 
                 srcAddr = socket.inet_ntoa(data[12:16])
@@ -589,12 +601,16 @@ class PacketRelay():
 
                 # raw sockets cannot be bound to a specific port, so we receive all UDP packets with matching dstAddr
                 if receivingInterface == 'local' and not self.match(dstAddr, dstPort):
+                    if tx['relay']['port'] in [987, 9302]:
+                        print(9)
                     continue
 
                 if self.remoteSockets() and not (receivingInterface == 'remote' and self.noRemoteRelay) and srcAddr != self.ssdpUnicastAddr:
                     packet = self.aes.encrypt(self.MAGIC + socket.inet_aton(addr) + data)
                     for remoteConnection in self.remoteSockets():
                         if remoteConnection == s:
+                            if tx['relay']['port'] in [987, 9302]:
+                                print(8)
                             continue
                         try:
                             remoteConnection.sendall(struct.pack('!H', len(packet)) + packet)
@@ -609,6 +625,8 @@ class PacketRelay():
                             else:
                                 self.logger.info('REMOTE: Failed to connect to %s: %s' % (self.remoteAddr, str(e)))
                                 self.removeConnection(remoteConnection)
+                                if tx['relay']['port'] in [987, 9302]:
+                                    print(7)
                                 continue
 
                 origSrcAddr = srcAddr
@@ -638,6 +656,8 @@ class PacketRelay():
                 elif self.ssdpUnicastAddr and origDstAddr == self.ssdpUnicastAddr and origDstPort == PacketRelay.SSDP_UNICAST_PORT:
                     if not recentSsdpSearchSrc:
                         # We haven't seen a SSDP multicast request yet
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(6)
                         continue
 
                     # Relay the SSDP unicast answer back to the most recent source.
@@ -654,12 +674,16 @@ class PacketRelay():
                         destMac = binascii.unhexlify(PacketRelay.unicastIpToMac(dstAddr).replace(':', ''))
                     except Exception as e:
                         self.logger.info('DEBUG: exception while resolving mac of IP %s: %s' % (dstAddr, str(e)))
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(5)
                         continue
 
                     # It's possible (though unlikely) we can't resolve the MAC if it's unicast.
                     # In that case, we can't relay the packet.
                     if not destMac:
                         self.logger.info('DEBUG: could not resolve mac for %s' % dstAddr)
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(4)
                         continue
 
                 # Work out the name of the interface we received the packet on.
@@ -674,6 +698,8 @@ class PacketRelay():
                 for tx in self.transmitters:
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(3)
                         continue
 
                     transmit = True
@@ -683,9 +709,13 @@ class PacketRelay():
                             transmit = False
                             break
                     if not transmit:
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(2)
                         continue
 
                     if srcAddr == self.ssdpUnicastAddr and not self.onNetwork(srcAddr, tx['addr'], tx['netmask']):
+                        if tx['relay']['port'] in [987, 9302]:
+                            print(1)
                         continue
 
                     if broadcastPacket:

@@ -586,6 +586,9 @@ class PacketRelay():
                 ipHeaderLength = (struct.unpack('B', firstDataByte)[0] & 0x0f) * 4
                 srcPort = struct.unpack('!H', data[ipHeaderLength+0:ipHeaderLength+2])[0]
                 dstPort = struct.unpack('!H', data[ipHeaderLength+2:ipHeaderLength+4])[0]
+                if dstAddr == "10.1.4.255":
+                    if dstPort == 987:
+                        dstAddr = "255.255.255.255"
 
                 # raw sockets cannot be bound to a specific port, so we receive all UDP packets with matching dstAddr
                 if receivingInterface == 'local' and not self.match(dstAddr, dstPort):
@@ -619,7 +622,6 @@ class PacketRelay():
                 # Record who sent the request
                 # FIXME: record more than one?
                 destMac = None
-                modifiedData = None
 
                 if self.mdnsForceUnicast and dstAddr == PacketRelay.MDNS_MCAST_ADDR and dstPort == PacketRelay.MDNS_MCAST_PORT:
                     data = PacketRelay.mdnsSetUnicastBit(data, ipHeaderLength)
@@ -666,15 +668,23 @@ class PacketRelay():
                 broadcastPacket = False
                 if receivingInterface == 'local':
                     for tx in self.transmitters:
+                        broadcast = tx['broadcast']
+                        if dstPort == 987:
+                            broadcast = "255.255.255.255"
                         if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] \
                                 and self.onNetwork(addr, tx['addr'], tx['netmask']):
                             receivingInterface = tx['interface']
-                            broadcastPacket = (origDstAddr == tx['broadcast'])
+                            broadcastPacket = (origDstAddr == broadcast)
 
+                
                 for tx in self.transmitters:
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
                         continue
+                    broadcast = tx['broadcast']
+                    if dstPort == 987:
+                        print(broadcast)
+                        broadcast = "255.255.255.255"
 
                     transmit = True
                     for net in self.ifFilter:
@@ -689,10 +699,10 @@ class PacketRelay():
                         continue
 
                     if broadcastPacket:
-                        dstAddr = tx['broadcast']
+                        dstAddr = broadcast
                         destMac = self.etherAddrs[PacketRelay.BROADCAST]
-                        origDstAddr = tx['broadcast']
-                        data = data[:16] + socket.inet_aton(tx['broadcast']) + data[20:]
+                        origDstAddr = broadcast
+                        data = data[:16] + socket.inet_aton(broadcast) + data[20:]
 
                     if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):
                         destMac = destMac if destMac else self.etherAddrs[dstAddr]
@@ -720,7 +730,7 @@ class PacketRelay():
                         except Exception as e:
                             if e.errno == errno.ENXIO:
                                 try:
-                                    (ifname, mac, ip, netmask, broadcast) = self.getInterface(tx['interface'])
+                                    (ifname, mac, ip, netmask, _) = self.getInterface(tx['interface'])
                                     s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
                                     s.bind((ifname, 0))
                                     tx['mac'] = mac
@@ -897,6 +907,10 @@ def main():
                         help='Do not relay SSDP packets.')
     parser.add_argument('--noSonosDiscovery', action='store_true',
                         help='Do not relay broadcast Sonos discovery packets.')
+    parser.add_argument('--noSonyRemotePlay', action='store_true',
+                        help='Do not relay broadcast Playstation remote play packets.')
+    parser.add_argument('--noLogitechHarmony', action='store_true',
+                        help='Do not relay broadcast Logitech Harmony packets.')
     parser.add_argument('--homebrewNetifaces', action='store_true',
                         help='Use self-contained netifaces-like package.')
     parser.add_argument('--ifNameStructLen', type=int, default=40,
@@ -959,6 +973,14 @@ def main():
         relays.add(('%s:%d' % (PacketRelay.BROADCAST, 1900), 'Sonos Discovery'))
         relays.add(('%s:%d' % (PacketRelay.BROADCAST, 6969), 'Sonos Setup Discovery'))
 
+    if not args.noSonyRemotePlay:
+        relays.add(('%s:%d' % (PacketRelay.BROADCAST, 987), 'Playtation 4 Discovery'))
+        relays.add(('%s:%d' % ("10.1.4.255", 987), 'Playtation 4 Discovery'))
+        relays.add(('%s:%d' % (PacketRelay.BROADCAST, 9302), 'Playtation 5 Discovery'))
+
+    if not args.noLogitechHarmony:
+        relays.add(('%s:%d' % (PacketRelay.BROADCAST, 5224), 'Logitech Harmony Discovery'))
+
     if args.ssdpUnicastAddr:
         relays.add(('%s:%d' % (args.ssdpUnicastAddr, PacketRelay.SSDP_UNICAST_PORT), 'SSDP Unicast'))
 
@@ -1006,12 +1028,13 @@ def main():
         elif args.ssdpUnicastAddr:
             relayType = 'unicast'
         else:
-            errorMessage = 'IP address %s is neither a multicast nor a broadcast address' % addr
-            if args.foreground:
-                print(errorMessage)
-            else:
-                logger.warning(errorMessage)
-            return 1
+            relayType = 'broadcast'
+            #errorMessage = 'IP address %s is neither a multicast nor a broadcast address' % addr
+            #if args.foreground:
+            #    print(errorMessage)
+            #else:
+            #    logger.warning(errorMessage)
+            #return 1
 
         if port < 0 or port > 65535:
             errorMessage = 'UDP port %s out of range' % port

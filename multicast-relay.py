@@ -683,11 +683,6 @@ class PacketRelay():
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
                         continue
-                    broadcast = tx['broadcast']
-                    if dstPort == 987 and tx['relay']['port'] == 987:
-                        print("bro")
-                        print(tx)
-                        broadcast = "255.255.255.255"
 
                     transmit = True
                     for net in self.ifFilter:
@@ -700,6 +695,14 @@ class PacketRelay():
 
                     if srcAddr == self.ssdpUnicastAddr and not self.onNetwork(srcAddr, tx['addr'], tx['netmask']):
                         continue
+
+                    broadcast = tx['broadcast']
+                    if dstPort == 987:
+                        print("ing")
+                        if tx['relay']['port'] == 987:
+                            print("bro")
+                            print(tx)
+                            broadcast = "255.255.255.255"
 
                     if broadcastPacket:
                         dstAddr = broadcast

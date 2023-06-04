@@ -703,6 +703,7 @@ class PacketRelay():
                         if tx['relay']['port'] != 987:
                             continue
                         print("not skipped")
+                        continue
                         if relayAddr == "10.1.4.255":
                             print("ing")
                             relayAddr = "255.255.255.255"

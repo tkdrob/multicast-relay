@@ -698,9 +698,9 @@ class PacketRelay():
                     relayAddr = tx['relay']['addr']
                     #if dstPort == 1900:
                     #    print(tx)
-                    if dstPort == 987 and not modified:
-                        if tx['relay']['port'] != 987:
-                            continue
+                    if dstPort == 987 and not modified and tx['relay']['port'] == 987:
+                        #if tx['relay']['port'] != 987:
+                        #    continue
                         print("not skipped")
                         print(tx)
                         if relayAddr == "10.1.4.255":

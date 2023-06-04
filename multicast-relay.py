@@ -707,11 +707,13 @@ class PacketRelay():
                         print("ing")
                         relayAddr = "255.255.255.255"
                         broadcast = "255.255.255.255"
-                        origDstAddr = "255.255.255.255"
+                        #origDstAddr = "255.255.255.255"
                         modified = True
-                        print(tx)
-                        print(dstAddr)
                         print(origDstAddr)
+                        print(relayAddr)
+                        print(origDstPort)
+                        print(tx['relay']['port'])
+                        print((self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])))
                         #if tx['relay']['port'] == 987:
                         #    print("bro")
                         #    print(tx)

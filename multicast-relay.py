@@ -707,7 +707,7 @@ class PacketRelay():
                         print("ing")
                         relayAddr = "255.255.255.255"
                         broadcast = "255.255.255.255"
-                        #origDstAddr = "255.255.255.255"
+                        origDstAddr = "255.255.255.255"
                         modified = True
                         print(origDstAddr)
                         print(relayAddr)

@@ -703,20 +703,20 @@ class PacketRelay():
                         #    continue
                         print("not skipped")
                         print(tx)
-                        if relayAddr == "10.1.4.255":
-                            print("ing")
-                            relayAddr = "255.255.255.255"
-                            broadcast = "255.255.255.255"
-                            modified = True
-                            print(tx)
-                            print(dstAddr)
-                            print(origDstAddr)
-                            #if tx['relay']['port'] == 987:
-                            #    print("bro")
-                            #    print(tx)
-                            #    broadcast = "255.255.255.255"
-                        else:
-                            continue
+                        #if relayAddr == "10.1.4.255":
+                        print("ing")
+                        relayAddr = "255.255.255.255"
+                        broadcast = "255.255.255.255"
+                        modified = True
+                        print(tx)
+                        print(dstAddr)
+                        print(origDstAddr)
+                        #if tx['relay']['port'] == 987:
+                        #    print("bro")
+                        #    print(tx)
+                        #    broadcast = "255.255.255.255"
+                        #else:
+                        #    continue
 
                     if broadcastPacket:
                         dstAddr = broadcast

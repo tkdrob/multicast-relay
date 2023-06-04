@@ -697,14 +697,15 @@ class PacketRelay():
                         continue
 
                     broadcast = tx['broadcast']
-                    if dstPort == 987 and tx['relay']['addr'] == "255.255.255.255":
-                        print("ing")
-                        if tx['relay']['port'] == 987:
-                            print("bro")
-                            print(tx)
-                            broadcast = "255.255.255.255"
-                    else:
-                        continue
+                    if dstPort == 987:
+                        if tx['relay']['addr'] == "255.255.255.255":
+                            print("ing")
+                            if tx['relay']['port'] == 987:
+                                print("bro")
+                                print(tx)
+                                broadcast = "255.255.255.255"
+                        else:
+                            continue
 
                     if broadcastPacket:
                         dstAddr = broadcast

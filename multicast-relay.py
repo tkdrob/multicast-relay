@@ -724,7 +724,10 @@ class PacketRelay():
                     if broadcastPacket:
                         dstAddr = broadcast
                         destMac = self.etherAddrs[PacketRelay.BROADCAST]
-                        origDstAddr = tx['broadcast']
+                        if dstPort == 987:
+                            origDstAddr = broadcast
+                        else:
+                            origDstAddr = tx['broadcast']
                         data = data[:16] + socket.inet_aton(broadcast) + data[20:]
 
                     if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):

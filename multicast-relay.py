@@ -685,6 +685,7 @@ class PacketRelay():
                         continue
                     broadcast = tx['broadcast']
                     if dstPort == 987:
+                        print("bro")
                         print(tx)
                         broadcast = "255.255.255.255"
 

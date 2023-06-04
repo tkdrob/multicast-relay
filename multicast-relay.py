@@ -666,12 +666,13 @@ class PacketRelay():
 
                 # Work out the name of the interface we received the packet on.
                 broadcastPacket = False
+                relayAddr = tx['relay']['addr']
                 if receivingInterface == 'local':
                     for tx in self.transmitters:
                         broadcast = tx['broadcast']
                         if dstPort == 987 and tx['relay']['port'] == 987:
                             broadcast = "255.255.255.255"
-                        if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] \
+                        if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] \
                                 and self.onNetwork(addr, tx['addr'], tx['netmask']):
                             receivingInterface = tx['interface']
                             broadcastPacket = (origDstAddr == broadcast)
@@ -698,12 +699,14 @@ class PacketRelay():
                     #if dstPort == 1900:
                     #    print(tx)
                     if dstPort == 987:
-                        if tx['relay']['addr'] != "255.255.255.255":
+                        if relayAddr == "10.1.4.255":
                             print("ing")
-                            if tx['relay']['port'] == 987:
-                                print("bro")
-                                print(tx)
-                                broadcast = "255.255.255.255"
+                            relayAddr = "255.255.255.255"
+                            print(tx)
+                            #if tx['relay']['port'] == 987:
+                            #    print("bro")
+                            #    print(tx)
+                            #    broadcast = "255.255.255.255"
                         else:
                             continue
 
@@ -713,7 +716,7 @@ class PacketRelay():
                         origDstAddr = broadcast
                         data = data[:16] + socket.inet_aton(broadcast) + data[20:]
 
-                    if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):
+                    if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):
                         destMac = destMac if destMac else self.etherAddrs[dstAddr]
 
                         if tx['interface'] in self.masquerade:

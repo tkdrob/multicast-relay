@@ -671,7 +671,7 @@ class PacketRelay():
                         broadcast = tx['broadcast']
                         if dstPort == 987:
                             print("go")
-                            print(broadcast)
+                            print(tx)
                             broadcast = "255.255.255.255"
                         if origDstAddr == tx['relay']['addr'] and origDstPort == tx['relay']['port'] \
                                 and self.onNetwork(addr, tx['addr'], tx['netmask']):

@@ -702,6 +702,7 @@ class PacketRelay():
                         if relayAddr == "10.1.4.255":
                             print("ing")
                             relayAddr = "255.255.255.255"
+                            broadcast = "255.255.255.255"
                             print(tx)
                             #if tx['relay']['port'] == 987:
                             #    print("bro")

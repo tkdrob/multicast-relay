@@ -699,7 +699,7 @@ class PacketRelay():
                     #if dstPort == 1900:
                     #    print(tx)
                     if dstPort == 987:
-                        if tx['relay']['port'] != 987:
+                        if tx['relay']['port'] != 987 or tx['relay']['addr'] != "255.255.255.255":
                             continue
                         print("not skipped")
                         print(tx)

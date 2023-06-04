@@ -712,9 +712,9 @@ class PacketRelay():
                             continue
 
                     if broadcastPacket:
-                        dstAddr = broadcast
+                        dstAddr = tx['broadcast']
                         destMac = self.etherAddrs[PacketRelay.BROADCAST]
-                        origDstAddr = broadcast
+                        origDstAddr = tx['broadcast']
                         data = data[:16] + socket.inet_aton(broadcast) + data[20:]
 
                     if origDstAddr == relayAddr and origDstPort == tx['relay']['port'] and (self.oneInterface or not self.onNetwork(addr, tx['addr'], tx['netmask'])):
@@ -739,6 +739,8 @@ class PacketRelay():
                                                                                                           asSrc))
 
                         try:
+                            #if dstPort == 987:
+                            #    print()
                             self.transmitPacket(tx['socket'], tx['mac'], destMac, ipHeaderLength, data)
                         except Exception as e:
                             if e.errno == errno.ENXIO:

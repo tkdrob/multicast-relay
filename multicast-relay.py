@@ -502,6 +502,7 @@ class PacketRelay():
                 (inputready, _, _) = select.select(additionalListeners + self.receivers, [], [], 1)
             except KeyboardInterrupt:
                 break
+            modified = False
             for s in inputready:
                 if s == self.listenSock:
                     (remoteConnection, remoteAddr) = s.accept()
@@ -676,7 +677,6 @@ class PacketRelay():
                             receivingInterface = tx['interface']
                             broadcastPacket = (origDstAddr == broadcast)
 
-                modified = False
                 for tx in self.transmitters:
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
@@ -698,7 +698,7 @@ class PacketRelay():
                     relayAddr = tx['relay']['addr']
                     #if dstPort == 1900:
                     #    print(tx)
-                    if dstPort == 987 and not modified and tx['relay']['port'] == 987:
+                    if dstPort == 987 and modified is False and tx['relay']['port'] == 987:
                         #if tx['relay']['port'] != 987:
                         #    continue
                         print("not skipped")

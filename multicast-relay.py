@@ -502,7 +502,6 @@ class PacketRelay():
                 (inputready, _, _) = select.select(additionalListeners + self.receivers, [], [], 1)
             except KeyboardInterrupt:
                 break
-            print(len(inputready))
             for s in inputready:
                 if s == self.listenSock:
                     (remoteConnection, remoteAddr) = s.accept()
@@ -677,7 +676,7 @@ class PacketRelay():
                             receivingInterface = tx['interface']
                             broadcastPacket = (origDstAddr == broadcast)
 
-                count = len(self.transmitters) / 4
+                
                 for tx in self.transmitters:
                     # Re-transmit on all other interfaces than on the interface that we received this packet from...
                     if receivingInterface == tx['interface']:
@@ -700,7 +699,6 @@ class PacketRelay():
                     #if dstPort == 1900:
                     #    print(tx)
                     if dstPort == 987:
-                        len(self.transmitters) / 4
                         if relayAddr == "10.1.4.255":
                             print("ing")
                             relayAddr = "255.255.255.255"
